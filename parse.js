@@ -14,12 +14,18 @@ const checkDelegations = async (address) => {
                 eligible: false
             }
         }
-        const delegatedStarsBalance = response.data.delegation_responses.find((delegationResponse) => (delegationResponse.delegation.shares / (10**6)) >= minimumBalance);
-        if(delegatedStarsBalance) {
+        let totalDelegated = 0;
+        response.data.delegation_responses.every(
+            (delegationResponse) => totalDelegated += Number(delegationResponse.balance.amount)
+        );
+
+        if(totalDelegated / (10**6) >= minimumBalance) {
             return {
                 eligible: true,
-                balance: delegatedStarsBalance.delegation.shares / 10**6
+                balance: totalDelegated / (10**6)
             }
+        } else {
+            console.log(`Address: ${address} - total delegated: ${totalDelegated}`);
         }
     } catch (error) {
         console.error(error.message);
