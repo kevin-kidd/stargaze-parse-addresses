@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cosmwasm": "^1.1.1"
+    "cosmwasm": "^1.1.1",
+    "node-xlsx": "^0.21.0"
   },
   "devDependencies": {
     "axios": "^1.1.3"
