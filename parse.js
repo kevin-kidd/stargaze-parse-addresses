@@ -4,10 +4,19 @@ const axios = require("axios");
 const xlsx = require("node-xlsx");
 
 const minimumBalance = 50;
+const blockHeight = "5450141" // 2022-11-06 22:00:01
 
 const checkDelegations = async (address) => {
     try {
-        const response = await axios.get(`https://rest.stargaze-1.publicawesome.dev/cosmos/staking/v1beta1/delegations/${address}`);
+        const response = await axios.get(
+            `https://rest.stargaze-1.publicawesome.dev/cosmos/staking/v1beta1/delegations/${address}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-cosmos-block-height": blockHeight
+                }
+            }
+        );
         if(!response.data || !response.data.delegation_responses) {
             console.error("Error: Failed to fetch delegations for address: " + address);
             return {
@@ -24,8 +33,6 @@ const checkDelegations = async (address) => {
                 eligible: true,
                 balance: totalDelegated / (10**6)
             }
-        } else {
-            console.log(`Address: ${address} - total delegated: ${totalDelegated}`);
         }
     } catch (error) {
         console.error(error.message);
@@ -38,7 +45,15 @@ const checkDelegations = async (address) => {
 
 const checkStarsBalance = async (address) => {
     try {
-        const response = await axios.get(`https://rest.stargaze-1.publicawesome.dev/cosmos/bank/v1beta1/balances/${address}`);
+        const response = await axios.get(
+            `https://rest.stargaze-1.publicawesome.dev/cosmos/bank/v1beta1/balances/${address}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-cosmos-block-height": blockHeight
+                }
+            }
+        );
         if(!response.data || !response.data.balances) {
             console.error("Error: Failed to fetch balance for address: " + address);
             return {
